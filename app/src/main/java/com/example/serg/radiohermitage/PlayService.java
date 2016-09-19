@@ -64,7 +64,7 @@ public class PlayService extends Service implements IPlayer {
         Log.d(TAG, "got onStartCMD!");
         if (intent.getAction() != null) {
             if (intent.getAction().equals(ACTION_PLAY)) {
-                play();
+                toggleRadio();
             } else if (intent.getAction().equals(Consts.ACT_PREPARING)) {
                 Toast.makeText(getApplicationContext(), "Not prepared!", Toast.LENGTH_SHORT).show();
             }
@@ -72,8 +72,7 @@ public class PlayService extends Service implements IPlayer {
             showNotification(ACTION_PLAY, R.drawable.action_play);
             //preparePlayer(false);
         }
-        Intent notify = new Intent(Consts.ACT_NOTIFY);
-        LocalBroadcastManager.getInstance(PlayService.this).sendBroadcast(notify);
+        sendBroadcastMsg(Consts.ACT_NOTIFY);
         return START_NOT_STICKY;
     }
 
@@ -86,8 +85,7 @@ public class PlayService extends Service implements IPlayer {
     private void preparePlayer(final boolean start) {
         if (!mediaPlayer.isPlaying()) {
             Log.d(TAG, "enter prepare!");
-            Intent intent = new Intent(Consts.ACT_NOT_PREPARED);
-            LocalBroadcastManager.getInstance(PlayService.this).sendBroadcast(intent);
+            sendBroadcastMsg(Consts.ACT_NOT_PREPARED);
             showNotification(Consts.ACT_PREPARING, R.drawable.action_play);
             try {
                 mediaPlayer.reset();
@@ -102,10 +100,8 @@ public class PlayService extends Service implements IPlayer {
                             stream.setState(State.PLAYING);
                             mediaPlayer.start();
                         }
-                        Intent intent = new Intent(Consts.ACT_NOTIFY);
-                        LocalBroadcastManager.getInstance(PlayService.this).sendBroadcast(intent);
-                        Intent prepIntent = new Intent(Consts.ACT_PREPARED);
-                        LocalBroadcastManager.getInstance(PlayService.this).sendBroadcast(prepIntent);
+                        sendBroadcastMsg(Consts.ACT_NOTIFY);
+                        sendBroadcastMsg(Consts.ACT_PREPARED);
                         showNotification(ACTION_PLAY, R.drawable.action_pause);
                     }
                 });
@@ -126,10 +122,8 @@ public class PlayService extends Service implements IPlayer {
             text = "Pause";
         }
         Intent playIntent = new Intent(this, PlayService.class);
-        //playIntent.setAction(ACTION_PLAY);
         playIntent.setAction(action);
         PendingIntent pPlayIntent = PendingIntent.getService(this, (int) System.currentTimeMillis(), playIntent, 0);
-        //NotificationCompat.Action actionPlay = new NotificationCompat.Action.Builder(R.drawable.action_play, "Play/Pause", pPlayIntent).build();
         NotificationCompat.Action actionPlay = new NotificationCompat.Action.Builder(resId, text, pPlayIntent).build();
         Notification n = new NotificationCompat.Builder(this)
                 .setContentTitle("Vesti FM")
@@ -142,27 +136,27 @@ public class PlayService extends Service implements IPlayer {
     }
 
     @Override
-    public void play() {
-        Log.d(TAG, "got play!");
+    public void toggleRadio() {
+        Log.d(TAG, "got toggleRadio!");
         if (stream.getState().equals(State.IDLE)) {
             Log.d(TAG, "IDLE state");
         } else if (stream.getState().equals(State.STOPPED)) {
             Log.d(TAG, "Stopped state");
-            //mediaPlayer.start();
             preparePlayer(true);
-            //stream.setState(State.PLAYING);
-            Intent intent = new Intent(Consts.ACT_NOTIFY);
-            LocalBroadcastManager.getInstance(PlayService.this).sendBroadcast(intent);
+            sendBroadcastMsg(Consts.ACT_NOTIFY);
         } else if (stream.getState().equals(State.PLAYING)) {
             Log.d(TAG, "Playing state");
             mediaPlayer.stop();
 
             stream.setState(State.STOPPED);
-            Intent intent = new Intent(Consts.ACT_NOTIFY);
-            LocalBroadcastManager.getInstance(PlayService.this).sendBroadcast(intent);
+            sendBroadcastMsg(Consts.ACT_NOTIFY);
             showNotification(ACTION_PLAY, R.drawable.action_play);
-            //preparePlayer(false);
         }
+    }
+
+    private void sendBroadcastMsg(String action){
+        Intent intent = new Intent(action);
+        LocalBroadcastManager.getInstance(PlayService.this).sendBroadcast(intent);
     }
 
     @Override

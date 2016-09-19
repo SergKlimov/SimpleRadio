@@ -27,9 +27,6 @@ import com.example.serg.radiohermitage.view.RadioViewImpl;
 public class MainActivity extends AppCompatActivity implements IAudioManagerProvider, IButtonClickProvider {
 
     private static final String TAG = "MainActivity";
-    /*private static final String ACT_PREPARED = "com.example.serg.radiohermitage.ACT_PREPARED";
-    private static final String ACT_NOT_PREPARED = "com.example.serg.radiohermitage.ACT_NOT_PREPARED";
-    private static final String ACT_NOTIFY = "com.example.serg.radiohermitage.ACT_NOTIFY";*/
 
     private IPlayer player = null;
     private IRadioView radioView;
@@ -44,12 +41,9 @@ public class MainActivity extends AppCompatActivity implements IAudioManagerProv
                 radioPresenter.onResume();
             } else if(intent.getAction().equals(Consts.ACT_PREPARED)){
                 radioView.getPlayPause().setEnabled(true);
-                //Toast.makeText(getApplicationContext(), "Prepared!", Toast.LENGTH_SHORT).show();
                 progressDialog.dismiss();
             } else if(intent.getAction().equals(Consts.ACT_NOT_PREPARED)){
-                //createDialog();
                 radioView.getPlayPause().setEnabled(false);
-                //Toast.makeText(getApplicationContext(), "Wait for prepare!", Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "show: " + progressDialog.toString());
                 progressDialog.show();
             }
@@ -164,8 +158,6 @@ public class MainActivity extends AppCompatActivity implements IAudioManagerProv
                 needExit = false;
             }
         }, 1500);
-
-        //super.onBackPressed();
     }
 
     @Override
@@ -176,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements IAudioManagerProv
     @Override
     public void onBtnClick() {
         if(radioView.getPlayPause().isEnabled())
-            player.play();
+            player.toggleRadio();
         else
             Toast.makeText(getApplicationContext(), "not prepared!", Toast.LENGTH_SHORT).show();
     }
