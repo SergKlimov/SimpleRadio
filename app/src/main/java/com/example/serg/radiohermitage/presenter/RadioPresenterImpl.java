@@ -76,25 +76,6 @@ public class RadioPresenterImpl implements IRadioPresenter {
                     }
                 }
         );
-        /*radioView.getSeekBar().setMax(audioManagerProvider.getAudioManager().getStreamMaxVolume(AudioManager.STREAM_MUSIC));
-        radioView.getSeekBar().setProgress(audioManagerProvider.getAudioManager().getStreamVolume(AudioManager.STREAM_MUSIC));
-        radioView.getSeekBar().setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                audioManagerProvider.getAudioManager().setStreamVolume(AudioManager.STREAM_MUSIC, i, 0);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });*/
-
     }
 
     @Override
@@ -102,7 +83,6 @@ public class RadioPresenterImpl implements IRadioPresenter {
         int i = audioManagerProvider.getAudioManager().getStreamVolume(AudioManager.STREAM_MUSIC);
         audioManagerProvider.getAudioManager().setStreamVolume(AudioManager.STREAM_MUSIC, i+1, AudioManager.FLAG_SHOW_UI);
         radioView.setSeekBarProgress(i+1);
-        //radioView.getSeekBar().setProgress(i+1);
     }
 
     @Override
@@ -110,7 +90,6 @@ public class RadioPresenterImpl implements IRadioPresenter {
         int i = audioManagerProvider.getAudioManager().getStreamVolume(AudioManager.STREAM_MUSIC);
         audioManagerProvider.getAudioManager().setStreamVolume(AudioManager.STREAM_MUSIC, i-1, AudioManager.FLAG_SHOW_UI);
         radioView.setSeekBarProgress(i-1);
-        //radioView.getSeekBar().setProgress(i-1);
     }
 
     @Override
