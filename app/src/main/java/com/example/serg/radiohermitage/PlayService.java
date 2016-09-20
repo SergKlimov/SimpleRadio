@@ -136,7 +136,7 @@ public class PlayService extends Service implements IPlayer {
         Notification n = new NotificationCompat.Builder(this)
                 .setContentTitle("Vesti FM")
                 .setContentText("Radio playing")
-                .setSmallIcon(R.drawable.action_play)
+                .setSmallIcon(resId)
                 .addAction(actionPlay)
                 .build();
 

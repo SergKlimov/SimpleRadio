@@ -33,6 +33,8 @@ public class RadioPresenterImpl implements IRadioPresenter {
                 setButtonImage(R.drawable.play_btn);
             }
         }
+        int i = audioManagerProvider.getAudioManager().getStreamVolume(AudioManager.STREAM_MUSIC);
+        radioView.setSeekBarProgress(i);
     }
 
     @Override
