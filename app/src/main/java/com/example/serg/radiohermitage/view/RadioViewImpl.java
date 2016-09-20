@@ -1,5 +1,6 @@
 package com.example.serg.radiohermitage.view;
 
+import android.media.AudioManager;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 
@@ -24,12 +25,23 @@ public class RadioViewImpl implements IRadioView {
         this.playPause = playPause;
     }
 
-    @Override
     public SeekBar getSeekBar() {
         return seekBar;
     }
 
     public void setSeekBar(SeekBar seekBar) {
         this.seekBar = seekBar;
+    }
+
+    @Override
+    public void setSeekBarProgress(int progress){
+        seekBar.setProgress(progress);
+    }
+
+    @Override
+    public void setUpSeekBar(int max, int progress, SeekBar.OnSeekBarChangeListener changeListener){
+        seekBar.setMax(max);
+        seekBar.setProgress(progress);
+        seekBar.setOnSeekBarChangeListener(changeListener);
     }
 }

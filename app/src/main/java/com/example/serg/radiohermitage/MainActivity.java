@@ -46,7 +46,11 @@ public class MainActivity extends AppCompatActivity implements IAudioManagerProv
                 radioView.getPlayPause().setEnabled(false);
                 Log.d(TAG, "show: " + progressDialog.toString());
                 progressDialog.show();
-            }
+            } /*else if(intent.getAction().equals(Consts.VOL_UP)){
+                radioView.getSeekBar().setProgress(radioView.getSeekBar().getProgress()+1);
+            } else if(intent.getAction().equals(Consts.VOL_DOWN)){
+                radioView.getSeekBar().setProgress(radioView.getSeekBar().getProgress()-1);
+            }*/
         }
     };
 
@@ -82,6 +86,8 @@ public class MainActivity extends AppCompatActivity implements IAudioManagerProv
         intentFilter.addAction(Consts.ACT_NOTIFY);
         intentFilter.addAction(Consts.ACT_PREPARED);
         intentFilter.addAction(Consts.ACT_NOT_PREPARED);
+        /*intentFilter.addAction(Consts.VOL_DOWN);
+        intentFilter.addAction(Consts.VOL_UP);*/
         manager.registerReceiver(broadcastReceiver, intentFilter);
 
     }
@@ -151,7 +157,6 @@ public class MainActivity extends AppCompatActivity implements IAudioManagerProv
 
         needExit = true;
         Toast.makeText(getApplicationContext(), "Press back to exit", Toast.LENGTH_SHORT).show();
-
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {

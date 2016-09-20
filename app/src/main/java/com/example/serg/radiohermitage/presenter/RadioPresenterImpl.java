@@ -54,7 +54,27 @@ public class RadioPresenterImpl implements IRadioPresenter {
                 buttonClickProvider.onBtnClick();
             }
         });
-        radioView.getSeekBar().setMax(audioManagerProvider.getAudioManager().getStreamMaxVolume(AudioManager.STREAM_MUSIC));
+        radioView.setUpSeekBar(
+                audioManagerProvider.getAudioManager().getStreamMaxVolume(AudioManager.STREAM_MUSIC),
+                audioManagerProvider.getAudioManager().getStreamVolume(AudioManager.STREAM_MUSIC),
+                new SeekBar.OnSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                        audioManagerProvider.getAudioManager().setStreamVolume(AudioManager.STREAM_MUSIC, i, 0);
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+
+                    }
+                }
+        );
+        /*radioView.getSeekBar().setMax(audioManagerProvider.getAudioManager().getStreamMaxVolume(AudioManager.STREAM_MUSIC));
         radioView.getSeekBar().setProgress(audioManagerProvider.getAudioManager().getStreamVolume(AudioManager.STREAM_MUSIC));
         radioView.getSeekBar().setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -71,7 +91,7 @@ public class RadioPresenterImpl implements IRadioPresenter {
             public void onStopTrackingTouch(SeekBar seekBar) {
 
             }
-        });
+        });*/
 
     }
 
@@ -79,14 +99,16 @@ public class RadioPresenterImpl implements IRadioPresenter {
     public void volUp(){
         int i = audioManagerProvider.getAudioManager().getStreamVolume(AudioManager.STREAM_MUSIC);
         audioManagerProvider.getAudioManager().setStreamVolume(AudioManager.STREAM_MUSIC, i+1, AudioManager.FLAG_SHOW_UI);
-        radioView.getSeekBar().setProgress(i+1);
+        radioView.setSeekBarProgress(i+1);
+        //radioView.getSeekBar().setProgress(i+1);
     }
 
     @Override
     public void volDown(){
         int i = audioManagerProvider.getAudioManager().getStreamVolume(AudioManager.STREAM_MUSIC);
         audioManagerProvider.getAudioManager().setStreamVolume(AudioManager.STREAM_MUSIC, i-1, AudioManager.FLAG_SHOW_UI);
-        radioView.getSeekBar().setProgress(i-1);
+        radioView.setSeekBarProgress(i-1);
+        //radioView.getSeekBar().setProgress(i-1);
     }
 
     @Override

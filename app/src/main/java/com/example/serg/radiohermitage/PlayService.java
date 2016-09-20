@@ -7,7 +7,9 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Binder;
+import android.os.Handler;
 import android.os.IBinder;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.NotificationCompat;
@@ -31,11 +33,17 @@ public class PlayService extends Service implements IPlayer {
     private final IBinder mBinder = new PlayerBinder();
     private Stream stream;
 
+    //private VolumeContentObserver volumeContentObserver;
+
     @Override
     public void onCreate() {
         Log.d(TAG, "got onCreate!");
         createPlayer();
         super.onCreate();
+
+        /*volumeContentObserver = new VolumeContentObserver(this, new Handler());
+        getApplicationContext().getContentResolver().registerContentObserver(Settings.System.CONTENT_URI, true, volumeContentObserver);*/
+
     }
 
     private void createPlayer() {
@@ -172,6 +180,7 @@ public class PlayService extends Service implements IPlayer {
         mediaPlayer.reset();
         mediaPlayer.release();
         mediaPlayer = null;
+        //getApplicationContext().getContentResolver().unregisterContentObserver(volumeContentObserver);
         super.onDestroy();
     }
 }
