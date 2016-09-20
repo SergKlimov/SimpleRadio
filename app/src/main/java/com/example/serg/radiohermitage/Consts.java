@@ -10,4 +10,5 @@ public class Consts {
     public static final String ACT_PREPARING = "com.example.serg.radiohermitage.ACT_PREPARING";
     public static final String VOL_UP = "com.example.serg.radiohermitage.VOL_UP";
     public static final String VOL_DOWN = "com.example.serg.radiohermitage.VOL_DOWN";
+    public static final String ACTION_PLAY = "com.example.serg.radiohermitage.ACTION_PLAY";
 }

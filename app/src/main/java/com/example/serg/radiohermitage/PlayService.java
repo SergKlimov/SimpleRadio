@@ -27,23 +27,16 @@ import java.io.IOException;
 public class PlayService extends Service implements IPlayer {
 
     private static final String TAG = "MainService";
-    private static final String ACTION_PLAY = "com.example.serg.radiohermitage.ACTION_PLAY";
 
     private MediaPlayer mediaPlayer = null;
     private final IBinder mBinder = new PlayerBinder();
     private Stream stream;
-
-    //private VolumeContentObserver volumeContentObserver;
 
     @Override
     public void onCreate() {
         Log.d(TAG, "got onCreate!");
         createPlayer();
         super.onCreate();
-
-        /*volumeContentObserver = new VolumeContentObserver(this, new Handler());
-        getApplicationContext().getContentResolver().registerContentObserver(Settings.System.CONTENT_URI, true, volumeContentObserver);*/
-
     }
 
     private void createPlayer() {
@@ -56,8 +49,7 @@ public class PlayService extends Service implements IPlayer {
             //stream = new Stream("http://stream02.media.rambler.ru/businessfmspb128.mp3", State.STOPPED);
             stream = new Stream("http://icecast.vgtrk.cdnvideo.ru/vestifm_mp3_64kbps", State.STOPPED);
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        }/*else
-            mediaPlayer.reset();*/
+        }
     }
 
     @Nullable
@@ -71,13 +63,13 @@ public class PlayService extends Service implements IPlayer {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "got onStartCMD!");
         if (intent.getAction() != null) {
-            if (intent.getAction().equals(ACTION_PLAY)) {
+            if (intent.getAction().equals(Consts.ACTION_PLAY)) {
                 toggleRadio();
             } else if (intent.getAction().equals(Consts.ACT_PREPARING)) {
                 Toast.makeText(getApplicationContext(), "Not prepared!", Toast.LENGTH_SHORT).show();
             }
         } else {
-            showNotification(ACTION_PLAY, R.drawable.action_play);
+            showNotification(Consts.ACTION_PLAY, R.drawable.action_play);
             //preparePlayer(false);
         }
         sendBroadcastMsg(Consts.ACT_NOTIFY);
@@ -110,7 +102,7 @@ public class PlayService extends Service implements IPlayer {
                         }
                         sendBroadcastMsg(Consts.ACT_NOTIFY);
                         sendBroadcastMsg(Consts.ACT_PREPARED);
-                        showNotification(ACTION_PLAY, R.drawable.action_pause);
+                        showNotification(Consts.ACTION_PLAY, R.drawable.action_pause);
                     }
                 });
             } catch (IOException e) {
@@ -122,21 +114,24 @@ public class PlayService extends Service implements IPlayer {
 
     int notifId = 190;
 
-    private void showNotification(String action, int resId) {
-        String text = null;
-        if (resId == R.drawable.action_play) {
+    private void showNotification(String action, int actionRes) {
+        String text = "";
+        int statusBarRes = R.drawable.action_play;
+        if (actionRes == R.drawable.action_play) {
             text = "Play";
-        } else if (resId == R.drawable.action_pause) {
+            statusBarRes = R.drawable.action_pause;
+        } else if (actionRes == R.drawable.action_pause) {
             text = "Pause";
+            statusBarRes = R.drawable.action_play;
         }
         Intent playIntent = new Intent(this, PlayService.class);
         playIntent.setAction(action);
         PendingIntent pPlayIntent = PendingIntent.getService(this, (int) System.currentTimeMillis(), playIntent, 0);
-        NotificationCompat.Action actionPlay = new NotificationCompat.Action.Builder(resId, text, pPlayIntent).build();
+        NotificationCompat.Action actionPlay = new NotificationCompat.Action.Builder(actionRes, text, pPlayIntent).build();
         Notification n = new NotificationCompat.Builder(this)
                 .setContentTitle("Vesti FM")
                 .setContentText("Radio playing")
-                .setSmallIcon(resId)
+                .setSmallIcon(statusBarRes)
                 .addAction(actionPlay)
                 .build();
 
@@ -146,9 +141,9 @@ public class PlayService extends Service implements IPlayer {
     @Override
     public void toggleRadio() {
         Log.d(TAG, "got toggleRadio!");
-        if (stream.getState().equals(State.IDLE)) {
+        /*if (stream.getState().equals(State.IDLE)) {
             Log.d(TAG, "IDLE state");
-        } else if (stream.getState().equals(State.STOPPED)) {
+        } else */if (stream.getState().equals(State.STOPPED)) {
             Log.d(TAG, "Stopped state");
             preparePlayer(true);
             sendBroadcastMsg(Consts.ACT_NOTIFY);
@@ -158,7 +153,7 @@ public class PlayService extends Service implements IPlayer {
 
             stream.setState(State.STOPPED);
             sendBroadcastMsg(Consts.ACT_NOTIFY);
-            showNotification(ACTION_PLAY, R.drawable.action_play);
+            showNotification(Consts.ACTION_PLAY, R.drawable.action_play);
         }
     }
 
@@ -180,7 +175,6 @@ public class PlayService extends Service implements IPlayer {
         mediaPlayer.reset();
         mediaPlayer.release();
         mediaPlayer = null;
-        //getApplicationContext().getContentResolver().unregisterContentObserver(volumeContentObserver);
         super.onDestroy();
     }
 }
